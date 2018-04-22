@@ -84,7 +84,7 @@ function getSongAddress(mid) {
         .then(res => res.json())
         .then(({ key }) => key)
         .then((vkey) => {
-            const address = `https://dl.stream.qqmusic.qq.com/${fileName}?vkey=${vkey}&guid=${guid}&fromtag=52`;
+            const address = `http://dl.stream.qqmusic.qq.com/${fileName}?vkey=${vkey}&guid=${guid}&fromtag=52`;
             return address;
         });
 }
