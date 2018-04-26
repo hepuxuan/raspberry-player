@@ -29,13 +29,21 @@ songDb.on('value', function(snapshot) {
             currentProcess.removeListener('exit', playSongs);
             currentProcess.kill();
         }
-        const searchTerm = encodeURIComponent(val);
 
-        search(searchTerm).then((result) => {
-            songs = result.songs;
-            index = 0;
+        if (val === '停止') {
+            return;
+        } else if (val === '下一首') {
+            index += 1;
             playSongs();
-        });
+        } else {
+            const searchTerm = encodeURIComponent(val);
+
+            search(searchTerm).then((result) => {
+                songs = result.songs;
+                index = 0;
+                playSongs();
+            });
+        }
     }
 });
 
