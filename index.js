@@ -103,6 +103,8 @@ function getSongAddress(mid) {
         .then(res => {
             console.log(res.status)
             return res.text();
+        }, err => {
+            console.log(err);
         })
         .then(text => {
             console.log(text);
