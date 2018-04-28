@@ -52,7 +52,7 @@ function playSongs()  {
         console.log(songs);
         const song = songs[index];
         console.log('index:' + index);
-        console.log('song: ' + song);
+        console.log('song: ' + song.mid);
         getSongAddress(song.mid).then((address) => {
             console.log('address: ' + address);
             currentProcess = player.play(address, (err) => {
@@ -101,5 +101,7 @@ function getSongAddress(mid) {
         .then((vkey) => {
             const address = `http://dl.stream.qqmusic.qq.com/${fileName}?vkey=${vkey}&guid=${guid}&fromtag=52`;
             return address;
+        }).catch(e =>  {
+            console.log(e);
         });
 }
