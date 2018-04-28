@@ -49,6 +49,7 @@ songDb.on('value', function(snapshot) {
 
 function playSongs()  {
     if (index  < songs.length) {
+        console.log(songs);
         const song = songs[index];
         getSongAddress(song.mid).then((address) => {
             console.log(address);
