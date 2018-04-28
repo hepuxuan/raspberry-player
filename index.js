@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const player = require('play-sound')(opts = {
-    player: 'mplayer',
+    player: 'C:\\Program Files\\mplayer\\Mplayer.exe',
 });
 const firebase = require("firebase");
 
@@ -30,10 +30,10 @@ songDb.on('value', function(snapshot) {
             currentProcess.kill();
         }
 
-        if (val === '停止') {
+        if (val.startsWith('停止')) {
             return;
-        } else if (val === '下一首') {
-            index += 1;
+        } else if (val.startsWith('下一首')) {
+            index += 1 % songs.length;
             playSongs();
         } else {
             const searchTerm = encodeURIComponent(val);
@@ -54,7 +54,7 @@ function playSongs()  {
             currentProcess = player.play(address, (err) => {
                 if (err && !err.killed) throw err
             });
-            index += 1;
+            index += 1 % songs.length;
             currentProcess.on('exit', playSongs);
         });
     }
