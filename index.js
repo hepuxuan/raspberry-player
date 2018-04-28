@@ -100,7 +100,10 @@ function getSongAddress(mid) {
     const url = `http://base.music.qq.com/fcgi-bin/fcg_musicexpress.fcg?json=3&guid=${guid}&g_tk=938407465&loginUin=0&hostUin=0&format=json&inCharset=utf8&outCharset=utf8&platform=yqq&jsonpCallback=&needNewCode=0`;
     console.log(url);
     return fetch(url)
-        .then(res => res.text())
+        .then(res => {
+            console.log(res.status)
+            return res.text();
+        })
         .then(text => {
             console.log(text);
             if (text.startsWith('jsonCallback')) {
