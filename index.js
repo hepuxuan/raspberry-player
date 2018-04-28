@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const player = require('play-sound')(opts = {
-    player: 'mplayer', // 'C:\\Program Files\\mplayer\\Mplayer.exe'
+    player: 'C:\\Program Files\\mplayer\\Mplayer.exe', // ''
 });
 const firebase = require("firebase");
 
@@ -85,40 +85,13 @@ function search(q, page = 1) {
         });
 }
 
-function parseJsonP(value) {
-    return JSON.parse(value.replace(`$jsonCallback(`, '').slice(0, -1));
-}
-
 function getSongAddress(mid) {
     const t = (new Date).getUTCMilliseconds();
     const guid = (Math.round(2147483647 * Math.random()) * t) % 1e10;
     const fileName = `C200${mid}.m4a`;
     const url = `http://base.music.qq.com/fcgi-bin/fcg_musicexpress.fcg?json=3&guid=${guid}&g_tk=938407465&loginUin=0&hostUin=0&format=json&inCharset=utf8&outCharset=utf8&platform=yqq&jsonpCallback=&needNewCode=0`;
-    console.log(url);
     return fetch(url)
-        .then(res => {
-            console.log(res.status)
-            return res.text();
-        }, err => {
-            console.log(err);
-        })
-        .then(text => {
-            console.log(text);
-            if (text.startsWith('jsonCallback')) {
-                return JSON.parse(parseJsonP(text));
-            } else {
-                return JSON.parse(text);
-            }
-        })
-        .then((key) => {
-            console.log('key: ' + key.key);
-            return key.key
-        })
-        .then((vkey) => {
-            const address = `http://dl.stream.qqmusic.qq.com/${fileName}?vkey=${vkey}&guid=${guid}&fromtag=52`;
-            console.log(address);
-            return address;
-        }).catch(e =>  {
-            console.log(e);
-        });
+        .then(res => res.json())
+        .then(key => key.key)
+        .then((vkey) => `http://dl.stream.qqmusic.qq.com/${fileName}?vkey=${vkey}&guid=${guid}&fromtag=52`);
 }
