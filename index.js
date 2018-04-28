@@ -102,6 +102,7 @@ function getSongAddress(mid) {
     return fetch(url)
         .then(res => res.text())
         .then(text => {
+            console.log(text);
             if (text.startsWith('jsonCallback')) {
                 return JSON.parse(parseJsonP(text));
             } else {
