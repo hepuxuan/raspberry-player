@@ -33,7 +33,7 @@ songDb.on('value', function(snapshot) {
         if (val.startsWith('停止')) {
             return;
         } else if (val.startsWith('下一首')) {
-            index += 1 % songs.length;
+            index += 1;
             playSongs();
         } else {
             const searchTerm = encodeURIComponent(val);
@@ -61,7 +61,7 @@ function playSongs()  {
                     throw err
                 }
             });
-            index += 1 % songs.length;
+            index += 1;
             currentProcess.on('exit', playSongs);
         });
     }
@@ -100,6 +100,7 @@ function getSongAddress(mid) {
         .then(({ key }) => key)
         .then((vkey) => {
             const address = `http://dl.stream.qqmusic.qq.com/${fileName}?vkey=${vkey}&guid=${guid}&fromtag=52`;
+            console.log(address);
             return address;
         }).catch(e =>  {
             console.log(e);
