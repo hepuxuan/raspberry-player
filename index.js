@@ -94,6 +94,7 @@ function getSongAddress(mid) {
     const guid = (Math.round(2147483647 * Math.random()) * t) % 1e10;
     const fileName = `C200${mid}.m4a`;
     const url = `http://base.music.qq.com/fcgi-bin/fcg_musicexpress.fcg?json=3&guid=${guid}&g_tk=938407465&loginUin=0&hostUin=0&format=json&inCharset=utf8&outCharset=utf8&platform=yqq&jsonpCallback=&needNewCode=0`;
+    console.log(url);
     return fetch(url)
         .then(res => res.json())
         .then((key) => {
