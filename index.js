@@ -97,7 +97,10 @@ function getSongAddress(mid) {
     const url = `http://base.music.qq.com/fcgi-bin/fcg_musicexpress.fcg?json=3&guid=${guid}&g_tk=938407465&loginUin=0&hostUin=0&format=json&inCharset=utf8&outCharset=utf8&platform=yqq&jsonpCallback=&needNewCode=0`;
     return fetch(url)
         .then(res => res.json())
-        .then(({ key }) => key)
+        .then((key) => {
+            console.log('key: ' + key.key);
+            return key.key
+        })
         .then((vkey) => {
             const address = `http://dl.stream.qqmusic.qq.com/${fileName}?vkey=${vkey}&guid=${guid}&fromtag=52`;
             console.log(address);
