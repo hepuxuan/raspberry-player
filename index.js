@@ -52,7 +52,7 @@ function playSongs()  {
         console.log(songs);
         const song = songs[index];
         getSongAddress(song.mid).then((address) => {
-            console.log(address);
+            console.log('address: ' + address);
             currentProcess = player.play(address, (err) => {
                 if (err && !err.killed) {
                     console.log(err);
