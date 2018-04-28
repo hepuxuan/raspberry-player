@@ -89,6 +89,10 @@ function search(q, page = 1) {
         });
 }
 
+function parseJsonP(value) {
+    return JSON.parse(value.replace(`$jsonCallback(`, '').slice(0, -1));
+}
+
 function getSongAddress(mid) {
     const t = (new Date).getUTCMilliseconds();
     const guid = (Math.round(2147483647 * Math.random()) * t) % 1e10;
@@ -96,7 +100,14 @@ function getSongAddress(mid) {
     const url = `http://base.music.qq.com/fcgi-bin/fcg_musicexpress.fcg?json=3&guid=${guid}&g_tk=938407465&loginUin=0&hostUin=0&format=json&inCharset=utf8&outCharset=utf8&platform=yqq&jsonpCallback=&needNewCode=0`;
     console.log(url);
     return fetch(url)
-        .then(res => res.json())
+        .then(res => res.text())
+        .then(text => {
+            if (text.startsWith('jsonCallback')) {
+                return JSON.parse(parseJsonP(text));
+            } else {
+                return JSON.parse(text);
+            }
+        })
         .then((key) => {
             console.log('key: ' + key.key);
             return key.key
