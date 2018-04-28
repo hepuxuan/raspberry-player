@@ -52,7 +52,10 @@ function playSongs()  {
         const song = songs[index];
         getSongAddress(song.mid).then((address) => {
             currentProcess = player.play(address, (err) => {
-                if (err && !err.killed) throw err
+                if (err && !err.killed) {
+                    console.log(err);
+                    throw err
+                }
             });
             index += 1 % songs.length;
             currentProcess.on('exit', playSongs);
