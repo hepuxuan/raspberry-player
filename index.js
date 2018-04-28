@@ -26,28 +26,28 @@ songDb.on('value', function(snapshot) {
 
     if (val) {
         if (currentProcess) {
-            currentProcess.removeListener('exit', playSongs);
+            currentProcess.removeListener('exit', playNextSongs);
             currentProcess.kill();
         }
 
         if (val.startsWith('停止')) {
             return;
         } else if (val.startsWith('下一首')) {
-            index += 1;
-            playSongs();
+            playNextSongs();
         } else {
             const searchTerm = encodeURIComponent(val);
 
             search(searchTerm).then((result) => {
                 songs = result.songs;
-                index = 0;
-                playSongs();
+                index = -1;
+                playNextSongs();
             });
         }
     }
 });
 
-function playSongs()  {
+function playNextSongs()  {
+    index += 1;
     if (index  < songs.length) {
         console.log(songs);
         const song = songs[index];
@@ -61,8 +61,7 @@ function playSongs()  {
                     throw err
                 }
             });
-            index += 1;
-            currentProcess.on('exit', playSongs);
+            currentProcess.on('exit', playNextSongs);
         });
     }
 }
