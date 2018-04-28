@@ -57,7 +57,7 @@ function playNextSongs()  {
             console.log('address: ' + address);
             currentProcess = player.play(address, (err) => {
                 if (err && !err.killed) {
-                    console.log(err);
+                    console.log('err: ' + err);
                     throw err
                 }
             });
