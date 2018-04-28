@@ -51,6 +51,8 @@ function playSongs()  {
     if (index  < songs.length) {
         console.log(songs);
         const song = songs[index];
+        console.log('index:' + index);
+        console.log('song: ' + song);
         getSongAddress(song.mid).then((address) => {
             console.log('address: ' + address);
             currentProcess = player.play(address, (err) => {
