@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const player = require('play-sound')(opts = {
-    player: 'mplayer', // 'C:\\Program Files\\mplayer\\Mplayer.exe'
+    player: 'C:\\Program Files\\mplayer\\Mplayer.exe', // 'C:\\Program Files\\mplayer\\Mplayer.exe'
 });
 const firebase = require("firebase");
 
@@ -49,16 +49,12 @@ songDb.on('value', function(snapshot) {
 function playNextSongs()  {
     index += 1;
     if (index  < songs.length) {
-        console.log(songs);
         const song = songs[index];
-        console.log('index:' + index);
-        console.log('song: ' + song.mid);
         getSongAddress(song.mid).then((address) => {
-            console.log('address: ' + address);
             currentProcess = player.play(address, (err) => {
                 if (err && !err.killed) {
                     console.log('err: ' + err);
-                    throw err
+                    // throw err
                 }
             });
             currentProcess.on('exit', playNextSongs);
