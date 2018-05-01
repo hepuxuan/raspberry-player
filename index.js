@@ -19,7 +19,7 @@ const commandDb = firebase.database().ref('command');
 const currentSongDb = firebase.database().ref('current');
 let currentProcess;
 let songs = [];
-let index = 0;
+let index = -1;
 
 songDb.set("");
 commandDb.set("");
@@ -30,12 +30,12 @@ commandDb.on('value', function(snapshot) {
     console.log(val);
 
     if (val) {
-        if (currentProcess) {
-            currentProcess.removeListener('exit', playNextSongs);
-            currentProcess.kill();
-        }
-
         if (val.startsWith('stop')) {
+            if (currentProcess) {
+                currentProcess.removeListener('exit', playNextSongs);
+                currentProcess.kill();
+                currentProcess = null;
+            }
             currentSongDb.set("");
             return;
         } else if (val.startsWith('next_song')) {
@@ -60,6 +60,11 @@ function playNextSongs()  {
         const song = songs[index];
         currentSongDb.set(song.song);
         getSongAddress(song.mid).then((address) => {
+            if (currentProcess) {
+                currentProcess.removeListener('exit', playNextSongs);
+                currentProcess.kill();
+                currentProcess = null;
+            }
             currentProcess = player.play(address, (err) => {
                 if (err && !err.killed) {
                     console.log('err: ' + err);
