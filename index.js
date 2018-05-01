@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const player = require('play-sound')(opts = {
-    player: 'mplayer', // 'C:\Program Files\mplayer\Mplayer.exe'
+    player: 'C:\\Program Files\\mplayer\\Mplayer.exe', // 'C:\Program Files\mplayer\Mplayer.exe'
 });
 const firebase = require("firebase");
 
@@ -14,15 +14,20 @@ const config = {
 };
 firebase.initializeApp(config);
 
-const songDb = firebase.database().ref('songs');
+const songDb = firebase.database().ref('song');
+const commandDb = firebase.database().ref('command');
+const currentSongDb = firebase.database().ref('current');
 let currentProcess;
 let songs = [];
 let index = 0;
 
 songDb.set("");
+commandDb.set("");
+currentSongDb.set("");
 
-songDb.on('value', function(snapshot) {
+commandDb.on('value', function(snapshot) {
     const val = snapshot.val();
+    console.log(val);
 
     if (val) {
         if (currentProcess) {
@@ -30,17 +35,20 @@ songDb.on('value', function(snapshot) {
             currentProcess.kill();
         }
 
-        if (val.startsWith('停止')) {
+        if (val.startsWith('stop')) {
+            currentSongDb.set("");
             return;
-        } else if (val.startsWith('下一首')) {
+        } else if (val.startsWith('next_song')) {
             playNextSongs();
-        } else {
-            const searchTerm = encodeURIComponent(val);
+        } else if (val.startsWith('play')) {
+            songDb.once('value', function (songSnapshot) {
+                const searchTerm = encodeURIComponent(songSnapshot.val());
 
-            search(searchTerm).then((result) => {
-                songs = result.songs;
-                index = -1;
-                playNextSongs();
+                search(searchTerm).then((result) => {
+                    songs = result.songs;
+                    index = -1;
+                    playNextSongs();
+                });
             });
         }
     }
@@ -50,6 +58,7 @@ function playNextSongs()  {
     index += 1;
     if (index  < songs.length) {
         const song = songs[index];
+        currentSongDb.set(song.song);
         getSongAddress(song.mid).then((address) => {
             currentProcess = player.play(address, (err) => {
                 if (err && !err.killed) {
