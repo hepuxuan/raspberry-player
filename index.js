@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 const flatten = require('lodash/flatten')
 const player = require('play-sound')(opts = {
-    player: 'C:\\Program Files\\mplayer\\Mplayer.exe', // 'C:\Program Files\mplayer\Mplayer.exe'
+    player: 'mplayer', // 'C:\Program Files\mplayer\Mplayer.exe'
 });
 const firebase = require("firebase");
 
