@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
+const flatten = require('lodash/flatten')
 const player = require('play-sound')(opts = {
-    player: 'mplayer', // 'C:\Program Files\mplayer\Mplayer.exe'
+    player: 'C:\\Program Files\\mplayer\\Mplayer.exe', // 'C:\Program Files\mplayer\Mplayer.exe'
 });
 const firebase = require("firebase");
 
@@ -27,7 +28,6 @@ currentSongDb.set("");
 
 commandDb.on('value', function(snapshot) {
     const val = snapshot.val();
-    console.log(val);
 
     if (val) {
         if (val.startsWith('stop')) {
@@ -40,6 +40,12 @@ commandDb.on('value', function(snapshot) {
             return;
         } else if (val.startsWith('next_song')) {
             playNextSongs();
+        } else if (val.startsWith('play_list')) {
+            getPlayList().then((result) => {
+                songs = result;
+                index = -1;
+                playNextSongs();
+            });
         } else if (val.startsWith('play')) {
             songDb.once('value', function (songSnapshot) {
                 const searchTerm = encodeURIComponent(songSnapshot.val());
@@ -97,6 +103,22 @@ function search(q, page = 1) {
                 songs: [],
             };
         });
+}
+
+function getPlayList() {
+    const url = 'https://c.y.qq.com/v8/fcg-bin/fcg_myqq_toplist.fcg?g_tk=5381&uin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=h5&needNewCode=1&_=1512554796112%E4%BD%9C%E8%80%85%EF%BC%9Acode_mcx%E9%93%BE%E6%8E%A5%EF%BC%9Ahttps://juejin.im/post/5a35228e51882506a463b172';
+    return fetch(url)
+        .then(r => r.json())
+        .then(({ data: { topList } }) => Promise.all(topList.slice(0, 5).map(({ id }) => {
+            const url = `https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg?g_tk=5381&uin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=h5&needNewCode=1&tpl=3&page=detail&type=top&topid=${id}`;
+
+            return fetch(url).then(res => res.json()).then(data => data.songlist.map(({ data: { songname, songmid } }) => ({
+                song: songname,
+                mid: songmid,
+            })));
+        })))
+        .then(flatten);
+
 }
 
 function getSongAddress(mid) {
