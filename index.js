@@ -4,6 +4,7 @@ const player = require('play-sound')(opts = {
     player: 'mplayer', // 'C:\Program Files\mplayer\Mplayer.exe'
 });
 const firebase = require("firebase");
+const HttpsProxyAgent = require('https-proxy-agent');
 
 const config = {
     apiKey: "AIzaSyD7Xcrs5ywIe9KPavSCg2xC_x2P2a3vHnE",
@@ -124,10 +125,16 @@ function getPlayList() {
 function getSongAddress(mid) {
     const t = (new Date).getUTCMilliseconds();
     const guid = (Math.round(2147483647 * Math.random()) * t) % 1e10;
-    const fileName = `C200${mid}.m4a`;
-    const url = `http://base.music.qq.com/fcgi-bin/fcg_musicexpress.fcg?json=3&guid=${guid}&g_tk=938407465&loginUin=0&hostUin=0&format=json&inCharset=utf8&outCharset=utf8&platform=yqq&jsonpCallback=&needNewCode=0`;
-    return fetch(url)
-        .then(res => res.json())
-        .then(key => key.key)
-        .then((vkey) => `http://dl.stream.qqmusic.qq.com/${fileName}?vkey=${vkey}&guid=${guid}&fromtag=52`);
+    const fileName = `C400${mid}.m4a`;
+    const url = `https://c.y.qq.com/base/fcgi-bin/fcg_music_express_mobile3.fcg?uin=0&g_tk=1278911659&loginUin=0&hostUin=0&inCharset=utf8&outCharset=utf-8&jsonpCallback=MusicJsonCallback&notice=0&platform=yqq&needNewCode=0&cid=205361747&uin=0&songmid=${mid}4&filename=${fileName}&guid=${guid}`;
+    return fetch(url, {
+        agent: new HttpsProxyAgent('http://58.221.72.189:3128'),
+        headers: {
+            Referer: 'https://y.qq.com/portal/player.html',
+            Host: 'y.qq.com',
+            Origin: 'https://y.qq.com',
+        },
+    }).then(res => res.json())
+        .then(res => res.data.items[0].vkey)
+        .then((vkey) =>`https://dl.stream.qqmusic.qq.com/${fileName}?vkey=${vkey}&guid=${guid}&uin=0&fromtag=66`);
 }

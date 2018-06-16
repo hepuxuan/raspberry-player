@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "firebase": "^4.13.0",
+    "https-proxy-agent": "^2.2.1",
     "lodash": "^4.17.10",
     "node-fetch": "^2.1.2",
     "play-sound": "^1.1.2",
