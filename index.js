@@ -135,6 +135,9 @@ function getSongAddress(mid) {
             Origin: 'https://y.qq.com',
         },
     }).then(res => res.json())
-        .then(res => res.data.items[0].vkey)
+        .then(res => {
+            console.log(res.data.items[0].vkey);
+            return res.data.items[0].vkey
+        })
         .then((vkey) =>`https://dl.stream.qqmusic.qq.com/${fileName}?vkey=${vkey}&guid=${guid}&uin=0&fromtag=66`);
 }
