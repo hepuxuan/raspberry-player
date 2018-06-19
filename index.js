@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 const flatten = require('lodash/flatten')
 const player = require('play-sound')(opts = {
-    player: 'mplayer', // 'C:\Program Files\mplayer\Mplayer.exe'
+    player: 'C:\\Program Files\\mplayer\\Mplayer.exe', // 'C:\Program Files\mplayer\Mplayer.exe'
 });
 const firebase = require("firebase");
 const HttpsProxyAgent = require('https-proxy-agent');
@@ -79,7 +79,7 @@ function playNextSongs()  {
                 }
             });
             currentProcess.on('exit', playNextSongs);
-        });
+        }).catch(playNextSongs);
     }
 }
 
@@ -125,7 +125,7 @@ function getPlayList() {
 function getSongAddress(mid) {
     const t = (new Date).getUTCMilliseconds();
     const guid = (Math.round(2147483647 * Math.random()) * t) % 1e10;
-    const fileName = `C400${mid}.m4a`;
+    const fileName = `C200${mid}.m4a`;
     const url = `https://c.y.qq.com/base/fcgi-bin/fcg_music_express_mobile3.fcg?uin=0&g_tk=1278911659&loginUin=0&hostUin=0&inCharset=utf8&outCharset=utf-8&jsonpCallback=MusicJsonCallback&notice=0&platform=yqq&needNewCode=0&cid=205361747&uin=0&songmid=${mid}4&filename=${fileName}&guid=${guid}`;
     return fetch(url, {
         agent: new HttpsProxyAgent('http://58.221.72.189:3128'),
@@ -139,5 +139,5 @@ function getSongAddress(mid) {
             console.log(res.data.items[0].vkey);
             return res.data.items[0].vkey
         })
-        .then((vkey) =>`https://dl.stream.qqmusic.qq.com/${fileName}?vkey=${vkey}&guid=${guid}&uin=0&fromtag=66`);
+        .then((vkey) => `http://dl.stream.qqmusic.qq.com/${fileName}?vkey=${vkey}&guid=${guid}&uin=0&fromtag=66`);
 }
