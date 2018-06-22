@@ -128,7 +128,7 @@ function getSongAddress(mid) {
     const fileName = `C200${mid}.m4a`;
     const url = `https://c.y.qq.com/base/fcgi-bin/fcg_music_express_mobile3.fcg?uin=0&g_tk=1278911659&loginUin=0&hostUin=0&inCharset=utf8&outCharset=utf-8&jsonpCallback=MusicJsonCallback&notice=0&platform=yqq&needNewCode=0&cid=205361747&uin=0&songmid=${mid}4&filename=${fileName}&guid=${guid}`;
     return fetch(url, {
-        agent: new HttpsProxyAgent('http://111.230.166.51:3128'),
+        agent: new HttpsProxyAgent('https://secure.uku.im:993'),
         headers: {
             Referer: 'https://y.qq.com/portal/player.html',
             Host: 'y.qq.com',
